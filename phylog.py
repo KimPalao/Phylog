@@ -4,8 +4,7 @@ import re
 import time
 from colorama import init
 
-init()
-
+# ANSI Escape colors
 font = {
     'normal': 0,
     'bold': 1,
@@ -24,7 +23,10 @@ font = {
 
 
 def get_code(message):
-    regex = r"\[[0-9\-a-zA-Z :\/]+\] PHP (\w+\s*\w*|\[[0-9]{3}\])"
+    # a regular expression to match the following:
+    # [12-Jun-2018 21:43:34 Europe/Berlin] PHP Notice:  Hello world! in C:\Projects\test\index.php on line 10
+    # [12-Jun-2018 21:43:34 Europe/Berlin] PHP [200]:  / in C:\Projects\test\index.php on line 10
+    regex = r'\[[0-9\-a-zA-Z :\/]+\] PHP (\w+\s*\w*|\[[0-9]{3}\])'
     result = re.search(regex, message)
     if result:
         return result.group(1)
@@ -33,7 +35,10 @@ def get_code(message):
 
 
 def add_color(message, fg='white', bg='black', style='normal'):
-    return '\x1b[' + str(font[style]) + ';' + str(font[fg]) + ';' + str(font[bg] + 10) + 'm' + message + '\x1b[0m'
+    line = '\x1b[' + str(font[style]) + ';' + str(font[fg]) + ';' + str(font[bg] + 10) + 'm' + message + '\x1b[0m'
+    # Remove the newline from the file so no blank lines will be printed
+    line = line.replace('\n', '')
+    return line
 
 
 def log(message):
@@ -44,37 +49,42 @@ def log(message):
     code = get_code(message)
     if code == '':
         print(add_color(message, 'cyan'))
-    if code == 'Warning' or len(code) > 0 and code[0] == '3':
+    if code == 'Warning' or len(code) > 1 and code[1] == '3':
         print(add_color(message, 'yellow'))
-    elif code == 'Fatal error' or len(code) > 0 and code[0] == '4':
+    elif code == 'Fatal error' or len(code) > 1 and code[1] == '4':
         print(add_color(message, 'red'))
-    elif code == 'Parse error' or len(code) > 0 and code[0] == '5':
+    elif code == 'Parse error' or len(code) > 1 and code[1] == '5':
         print(add_color(message, fg='red', style='bold'))
     else:
         print(add_color(message, 'cyan'))
 
 
 def main():
+    init()
+    # Try out a default file name first
     file = 'php.log'
     while True:
         try:
-            f = f = open(file, 'r')
+            f = open(file, 'r')
             break
         except FileNotFoundError:
+            # Prompt the user for a file if php.log doesn't exist
             file = input('Please enter a file name: ')
 
+    # Allow the user to clear the file before using
     erase = input('Clear the file\'s contents?[Y/N]: ')
     if erase[0] and erase[0].lower() == 'y':
         f.close()
-        f = f = open(file, 'w')
+        f = open(file, 'w')
         f.close()
         print('File cleared.')
-        f = f = open(file, 'r')
+        f = open(file, 'r')
 
     while True:
         for line in f:
-            if line:
-                log(line)
+            log(line)
+        # Pause for 1/10 of a second so it won't use up the CPU so much
+        # Results still appear as if they were instant
         time.sleep(.1)
 
 
