@@ -35,3 +35,7 @@ The program will then read the following line:
 [12-Jun-2018 21:43:34 Europe/Berlin] PHP [200]: /index in C:\Projects\test\index.php on line 10
 
 Dependencies: colorama
+
+## Changelog
+##### 0.14
+Fixed a bug that would print a line twice if it didn't match the pattern

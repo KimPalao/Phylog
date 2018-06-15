@@ -47,8 +47,6 @@ def log(message):
     :return: void
     """
     code = get_code(message)
-    if code == '':
-        print(add_color(message, 'cyan'))
     if code == 'Warning' or len(code) > 1 and code[1] == '3':
         print(add_color(message, 'yellow'))
     elif code == 'Fatal error' or len(code) > 1 and code[1] == '4':
