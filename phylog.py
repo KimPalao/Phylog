@@ -26,7 +26,7 @@ def get_code(message):
     # a regular expression to match the following:
     # [12-Jun-2018 21:43:34 Europe/Berlin] PHP Notice:  Hello world! in C:\Projects\test\index.php on line 10
     # [12-Jun-2018 21:43:34 Europe/Berlin] PHP [200]:  / in C:\Projects\test\index.php on line 10
-    regex = r'\[[0-9\-a-zA-Z :\/]+\] PHP (\w+\s*\w*|\[[0-9]{3}\])'
+    regex = r'\[[0-9\-a-zA-Z :\/]+\] (?:PHP )(\w+\s*\w*|\[[0-9]{3}\])'
     result = re.search(regex, message)
     if result:
         return result.group(1)

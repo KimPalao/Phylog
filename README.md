@@ -28,14 +28,20 @@ The program will read lines and color those that are in this format:
 
 Add this line to your php file if you want to log the response code. Works most effectively in a router script
 
-`error_log('PHP [' . http_response_code() . '] ' . $_SERVER['REQUEST_URI']);`
+~~error_log('PHP [' . http_response_code() . '] ' . $_SERVER['REQUEST_URI']);~~
+`error_log('[' . http_response_code() . '] ' . $_SERVER['REQUEST_URI']);`
 
 The program will then read the following line:
 
-[12-Jun-2018 21:43:34 Europe/Berlin] PHP [200]: /index in C:\Projects\test\index.php on line 10
+[12-Jun-2018 21:43:34 Europe/Berlin] [200]: /index in C:\Projects\test\index.php on line 10
 
 Dependencies: colorama
 
 ## Changelog
+
+##### 0.15
+Changed the regular expression used so that logging the http response code without
+the 'PHP' will still trigger the color
+
 ##### 0.14
 Fixed a bug that would print a line twice if it didn't match the pattern
